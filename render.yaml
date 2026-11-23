@@ -1,0 +1,116 @@
+services:
+  - type: web
+    name: starcake
+    runtime: php
+    plan: starter
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader --no-interaction
+      npm ci --no-audit --no-fund
+      npm run build
+      php artisan config:cache
+      php artisan route:cache
+      php artisan view:cache
+    startCommand: |
+      php artisan migrate --force --no-interaction
+      php artisan db:seed --force --no-interaction || true
+      php artisan serve --host=0.0.0.0 --port=$PORT
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_TIMEZONE
+        value: Asia/Jakarta
+      - key: APP_LOCALE
+        value: id
+      - key: APP_KEY
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stack
+      - key: APP_URL
+        value: https://starcake.onrender.com
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_DATABASE
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: BROADCAST_CONNECTION
+        value: reverb
+      - key: REVERB_APP_ID
+        fromService:
+          type: web
+          name: starcake-reverb
+          envVarKey: REVERB_APP_ID
+      - key: REVERB_APP_KEY
+        fromService:
+          type: web
+          name: starcake-reverb
+          envVarKey: REVERB_APP_KEY
+      - key: REVERB_APP_SECRET
+        fromService:
+          type: web
+          name: starcake-reverb
+          envVarKey: REVERB_APP_SECRET
+      - key: REVERB_HOST
+        value: starcake-reverb.onrender.com
+      - key: REVERB_PORT
+        value: "443"
+      - key: REVERB_SCHEME
+        value: https
+      - key: VITE_REVERB_APP_KEY
+        fromService:
+          type: web
+          name: starcake-reverb
+          envVarKey: REVERB_APP_KEY
+      - key: VITE_REVERB_HOST
+        value: starcake-reverb.onrender.com
+      - key: VITE_REVERB_PORT
+        value: "443"
+      - key: VITE_REVERB_SCHEME
+        value: https
+
+  - type: web
+    name: starcake-reverb
+    runtime: php
+    plan: starter
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader --no-interaction
+    startCommand: |
+      php artisan reverb:start --host=0.0.0.0 --port=$PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        generateValue: true
+      - key: REVERB_APP_ID
+        value: "starcake"
+      - key: REVERB_APP_KEY
+        value: "starcake-key"
+      - key: REVERB_APP_SECRET
+        generateValue: true
+      - key: REVERB_SERVER_HOST
+        value: "0.0.0.0"
+      - key: REVERB_HOST
+        value: starcake-reverb.onrender.com
+      - key: REVERB_PORT
+        value: "443"
+      - key: REVERB_SCHEME
+        value: https
+      - key: REVERB_ALLOWED_ORIGINS
+        value: "https://starcake.onrender.com"

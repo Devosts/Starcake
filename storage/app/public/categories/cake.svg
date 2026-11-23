@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="80%">
+      <stop offset="0" stop-color="#FFFDF6"/>
+      <stop offset="0.7" stop-color="#F8EBD6"/>
+      <stop offset="1" stop-color="#EDD9BC"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="2.1" fill="#E3CDA9" opacity="0.85"/>
+    </pattern>
+    <linearGradient id="sliceSide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5B3423"/>
+      <stop offset="0.55" stop-color="#462A1B"/>
+      <stop offset="1" stop-color="#2C1A0F"/>
+    </linearGradient>
+    <linearGradient id="sliceFace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#42281A"/>
+      <stop offset="1" stop-color="#2B1A0E"/>
+    </linearGradient>
+    <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF9EE"/>
+      <stop offset="1" stop-color="#EDDDC8"/>
+    </linearGradient>
+    <radialGradient id="cherry" cx="36%" cy="32%" r="75%">
+      <stop offset="0" stop-color="#E4755C"/>
+      <stop offset="0.45" stop-color="#B5402F"/>
+      <stop offset="1" stop-color="#6E1F14"/>
+    </radialGradient>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F0E4D2"/>
+    </linearGradient>
+    <radialGradient id="floorShadow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#3A2415" stop-opacity="0.4"/>
+      <stop offset="1" stop-color="#3A2415" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.35"/></filter>
+  </defs>
+
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect width="600" height="600" fill="url(#dots)"/>
+
+  <!-- Sparkles -->
+  <polygon points="128,152 132.5,165 147,165 135.5,174 140,188 128,178.5 116,188 120.5,174 109,165 123.5,165" fill="#E4B15A"/>
+  <polygon points="488,228 491.5,238.5 502.5,238.5 493.5,245 497,256 488,248.8 479,256 482.5,245 473.5,238.5 484.5,238.5" fill="#E4B15A" opacity="0.85"/>
+
+  <!-- Floor shadow + plate -->
+  <ellipse cx="300" cy="494" rx="238" ry="23" fill="url(#floorShadow)"/>
+  <ellipse cx="300" cy="448" rx="219" ry="30" fill="url(#plate)" stroke="#DEC9AC" stroke-width="4"/>
+  <ellipse cx="300" cy="442" rx="176" ry="20" fill="#FDF6EA" stroke="#E9DCC6" stroke-width="2.5"/>
+
+  <!-- Cake slice -->
+  <g filter="url(#soft)" stroke-linejoin="round">
+    <path d="M300 162 L180 402 L420 402 Z" fill="url(#sliceSide)" stroke="#1D0F07" stroke-width="4.5"/>
+    <path d="M300 162 L180 402 L238 402 Z" fill="url(#sliceFace)" opacity="0.85"/>
+    <path d="M254 300 L348 300 L363 332 L239 332 Z" fill="url(#cream)" stroke="#DFCDAF" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M222 370 L380 370 L393 402 L209 402 Z" fill="url(#cream)" stroke="#DFCDAF" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="286" cy="242" r="3.2" fill="#6B4430"/><circle cx="324" cy="238" r="3.2" fill="#6B4430"/><circle cx="303" cy="270" r="3.2" fill="#6B4430"/><circle cx="272" cy="252" r="2.2" fill="#6B4430"/>
+    <circle cx="272" cy="352" r="3.2" fill="#6B4430"/><circle cx="332" cy="350" r="3.2" fill="#6B4430"/>
+  </g>
+
+  <!-- Glaze drips over apex -->
+  <path d="M300 162 L266 222 a15 19 0 0 0 11 23 a12.5 15 0 0 0 12.5 -13 a12.5 17 0 0 0 11.5 -17 a12.5 15 0 0 0 11.5 13 a13.5 16 0 0 0 12.5 -15 a12.5 15 0 0 0 10.5 -12 Z" fill="#1B0D05" opacity="0.94"/>
+  <path d="M282 178 L250 226" stroke="#54301F" stroke-width="3.5" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Cream + cherry on apex -->
+  <circle cx="300" cy="158" r="18.5" fill="url(#cream)" stroke="#DFCDAF" stroke-width="3"/>
+  <path d="M300 139 q5 -13 15 -17" stroke="#33200F" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <circle cx="300" cy="142" r="12" fill="url(#cherry)"/><circle cx="296.5" cy="138.5" r="3.2" fill="#FFFFFF" opacity="0.85"/>
+
+  <!-- Crumbs -->
+  <circle cx="212" cy="443" r="3.4" fill="#402716"/><circle cx="394" cy="445" r="2.8" fill="#402716"/><circle cx="250" cy="438" r="2.2" fill="#402716"/>
+</svg>

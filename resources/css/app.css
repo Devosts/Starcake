@@ -1,0 +1,898 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================
+   STAR CAKE — "KOLOM"
+   Editorial bakery broadsheet. Swiss grid, ink on paper, one paprika accent.
+
+   HOUSE RULES
+     1. No radius anywhere except form controls (2px) and status dots.
+     2. No soft shadows. Only `shadow-hard` / `shadow-hard-lg` (4px/6px, no blur).
+     3. No drop-shadows, no glassmorphism, no glow, no floating orbs.
+     4. Solid grounds only. Hairlines do the structural work.
+     5. Accent fills always pair with INK text, never white.
+     6. Semantic colour is banned. Status = mono label + 2px left rule.
+   ========================================================================= */
+
+/* ============================================================================
+   BASE
+   ========================================================================= */
+@layer base {
+    html {
+        scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+        @apply bg-paper text-ink antialiased;
+        font-feature-settings: "rlig" 1, "calt" 1;
+        text-rendering: optimizeLegibility;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    /* One focus system: a crisp square ink ring, everywhere. */
+    :focus-visible {
+        @apply outline-2 outline-offset-2 outline-ink;
+    }
+
+    ::selection {
+        @apply bg-accent text-ink;
+    }
+
+    /* Neutralise @tailwindcss/forms defaults — square, ink, no blue. */
+    [type='checkbox'],
+    [type='radio'] {
+        border-radius: 2px;
+        border-color: rgb(20 17 14 / 0.35);
+        background-color: #FBF9F5;
+    }
+
+    [type='checkbox']:checked,
+    [type='radio']:checked {
+        background-color: #14110E;
+        border-color: #14110E;
+    }
+
+    /* The forms plugin tints the tick glyph blue; on an ink box it goes paper. */
+    [type='checkbox']:checked {
+        color: #FBF9F5;
+    }
+
+    [type='radio']:checked {
+        background-color: #FBF9F5;
+        border-color: #14110E;
+        box-shadow: inset 0 0 0 3px #14110E;
+    }
+
+    [type='checkbox']:focus,
+    [type='radio']:focus {
+        outline: 2px solid #14110E;
+        outline-offset: 2px;
+        --tw-ring-shadow: 0 0 #0000;
+        box-shadow: none;
+    }
+
+    /* Bare (non-.input) text-like inputs: the plugin would paint a blue ring. */
+    input:where([type='text'], [type='email'], [type='password'], [type='number'],
+        [type='search'], [type='tel'], [type='url'], [type='date'], [type='datetime-local'],
+        [type='month'], [type='time'], [type='week']),
+    select,
+    textarea {
+        border-color: rgb(20 17 14 / 0.25);
+        background-color: #FBF9F5;
+    }
+
+    input:where([type='text'], [type='email'], [type='password'], [type='number'],
+        [type='search'], [type='tel'], [type='url'], [type='date'], [type='datetime-local'],
+        [type='month'], [type='time'], [type='week']):focus,
+    select:focus,
+    textarea:focus {
+        border-color: #14110E;
+        outline: 2px solid #14110E;
+        outline-offset: 2px;
+        --tw-ring-shadow: 0 0 #0000;
+        box-shadow: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+/* ============================================================================
+   COMPONENTS
+   ========================================================================= */
+@layer components {
+
+    /* ---------- TYPE PRIMITIVES -------------------------------------- */
+
+    /* Editorial eyebrow: mono label preceded by a 3px paprika tick. */
+    .kicker {
+        @apply flex items-center gap-2 text-label uppercase text-ink-70;
+    }
+
+    .kicker::before {
+        content: "";
+        @apply h-3 w-[3px] shrink-0 bg-accent;
+    }
+
+    /* Section header stack: kicker -> display heading -> rule -> subcopy. */
+    .section-title {
+        @apply font-display text-display-l font-medium text-ink;
+    }
+
+    .section-subtitle {
+        @apply mt-3 max-w-measure-lg text-lede text-ink-70;
+    }
+
+    /* ---------- RULES & BLOCKS --------------------------------------- */
+
+    /* A ruled section. Hairline, no ground, no radius, no shadow. */
+    .rule-block {
+        @apply border-t border-ink pt-6;
+    }
+
+    /* Crisp 1px bordered block. The only "container" idiom. */
+    .card {
+        @apply border border-rule bg-paper-warm;
+    }
+
+    .card-flat {
+        @apply card;
+    }
+
+    /* Floating things (modals, dropdowns) get the one hard shadow. */
+    .card-elevated {
+        @apply card shadow-hard;
+    }
+
+    .card-pad {
+        @apply p-5 sm:p-6 lg:p-8;
+    }
+
+    .tile {
+        @apply border border-rule bg-paper-warm;
+    }
+
+    /* Figures ledger — a row of numbers split by hairlines, never stat cards. */
+    .ledger {
+        @apply grid grid-cols-2 border-t border-ink sm:grid-cols-3 lg:grid-cols-5;
+    }
+
+    .ledger-cell {
+        @apply border-b border-rule py-5 sm:border-r sm:px-5 sm:py-6 sm:last:border-r-0 lg:first:pl-0;
+    }
+
+    .ledger-figure {
+        @apply font-mono text-2xl font-medium tabular-nums tracking-tight text-ink sm:text-3xl;
+    }
+
+    .ledger-label {
+        @apply mt-1.5 text-label uppercase text-ink-70;
+    }
+
+    /* ---------- BUTTONS ----------------------------------------------
+       Square, 1px border, uppercase, flat. Ink fill -> paprika on hover.
+       ------------------------------------------------------------------ */
+
+    .btn {
+        @apply inline-flex select-none items-center justify-center gap-2 whitespace-nowrap
+               border font-sans font-semibold uppercase text-btn
+               transition-colors duration-150 ease-linear
+               focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink
+               disabled:cursor-not-allowed disabled:opacity-40;
+    }
+
+    .btn-primary {
+        @apply btn border-ink bg-ink px-5 py-3 text-paper
+               hover:border-accent hover:bg-accent hover:text-ink;
+    }
+
+    .btn-primary-lg {
+        @apply btn-primary px-7 py-4 text-base;
+    }
+
+    .btn-primary-sm {
+        @apply btn-primary px-3.5 py-2 text-xs;
+    }
+
+    .btn-outline {
+        @apply btn border-ink bg-transparent px-5 py-3 text-ink
+               hover:bg-ink hover:text-paper;
+    }
+
+    .btn-outline-lg {
+        @apply btn-outline px-7 py-4 text-base;
+    }
+
+    .btn-outline-sm {
+        @apply btn-outline px-3.5 py-2 text-xs;
+    }
+
+    /* Destructive is the one place the accent is allowed to shout. */
+    .btn-danger {
+        @apply btn border-accent bg-accent px-4 py-2.5 text-ink
+               hover:border-accent-700 hover:bg-accent-700 hover:text-paper;
+    }
+
+    .btn-ghost {
+        @apply btn border-transparent px-4 py-2 text-ink-70
+               hover:bg-paper-alt hover:text-ink;
+    }
+
+    /* For placement on ink bands. */
+    .btn-white {
+        @apply btn border-paper bg-paper px-7 py-4 text-ink
+               hover:border-accent hover:bg-accent;
+    }
+
+    .btn-icon {
+        @apply btn h-10 w-10 p-0 text-ink-70
+               hover:border-ink hover:text-ink;
+    }
+
+    .btn-icon-sm {
+        @apply btn h-9 w-9 p-0 text-ink-70
+               hover:border-ink hover:text-ink;
+    }
+
+    .btn-loading {
+        @apply pointer-events-none opacity-60;
+    }
+
+    /* Square spinner. No rounded ring. */
+    .btn-loading::after {
+        content: "";
+        @apply ml-2 h-3 w-3 shrink-0 animate-spin border border-current border-t-transparent;
+    }
+
+    /* ---------- STATUS
+       Mono uppercase label + 2px left rule. No pills, no colour coding.
+       ------------------------------------------------------------------ */
+
+    .badge {
+        @apply inline-flex items-center gap-1.5 whitespace-nowrap border-l-2 py-1 pl-2
+               text-label uppercase text-ink-70;
+    }
+
+    .badge-pending,
+    .badge-processing,
+    .badge-completed,
+    .badge-cancelled,
+    .badge-paid,
+    .badge-unpaid {
+        @apply border-ink text-ink-70;
+    }
+
+    /* Marketing marks that sit on imagery — need a solid ground. */
+    .badge-new {
+        @apply border-ink bg-ink text-paper;
+    }
+
+    .badge-best {
+        @apply border-accent bg-accent text-ink;
+    }
+
+    .badge-sale {
+        @apply border-ink bg-paper text-ink;
+    }
+
+    /* ---------- FORMS ---------------------------------------------- */
+
+    .input {
+        @apply w-full rounded-sm border border-rule bg-paper-warm px-3 py-2.5 text-body text-ink
+               placeholder:text-ink-40
+               transition-colors duration-150
+               focus:border-ink focus:outline-none focus:ring-0
+               disabled:cursor-not-allowed disabled:bg-paper-alt disabled:text-ink-40;
+    }
+
+    .input-lg {
+        @apply input px-4 py-3 text-base;
+    }
+
+    .input-sm {
+        @apply input px-2.5 py-1.5 text-xs;
+    }
+
+    .input-error {
+        @apply border-accent focus:border-accent;
+    }
+
+    .input-success {
+        @apply border-ink;
+    }
+
+    .input-file {
+        @apply block w-full text-sm text-ink
+               file:mr-4 file:border file:border-ink file:bg-ink file:px-4 file:py-2
+               file:text-sm file:font-semibold file:uppercase file:tracking-widest file:text-paper
+               hover:file:border-accent hover:file:bg-accent hover:file:text-ink;
+    }
+
+    .label {
+        @apply mb-2 block text-label uppercase text-ink-70;
+    }
+
+    .field-error {
+        @apply mt-1.5 text-label uppercase text-accent;
+    }
+
+    /* Square chevron, ink-coloured. */
+    .select-custom {
+        @apply input cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2314110E%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%200%201.414%200L10%2010.586l3.293-3.293a1%201%201%200%201.414%201.414l-4%204a1%201%201%200%200-1.414%200l-4-4a1%201%201%200%200-1.414%200z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:18px] bg-[right_0.6rem_center] bg-no-repeat pr-9;
+    }
+
+    .input-icon-left {
+        @apply input pl-10;
+    }
+
+    .input-icon-right {
+        @apply input pr-10;
+    }
+
+    /* ---------- NAVIGATION ------------------------------------------
+       Mono uppercase index. Active state is a paprika baseline rule.
+       ------------------------------------------------------------------ */
+
+    .nav-link {
+        @apply relative text-label uppercase tracking-[0.14em] text-ink-70
+               transition-colors duration-150 hover:text-ink;
+    }
+
+    .nav-link::after {
+        content: "";
+        @apply absolute -bottom-1.5 left-0 h-[2px] w-0 bg-accent
+               transition-[width] duration-200 ease-linear;
+    }
+
+    .nav-link:hover::after {
+        @apply w-full;
+    }
+
+    .nav-link-active {
+        @apply text-ink;
+    }
+
+    .nav-link-active::after {
+        @apply w-full;
+    }
+
+    .mobile-nav {
+        @apply flex items-center border-b border-rule px-1 py-3.5 text-label uppercase tracking-[0.14em] text-ink-70
+               transition-colors duration-150 hover:text-ink;
+    }
+
+    .mobile-nav-active {
+        @apply flex items-center border-b border-rule px-1 py-3.5 text-label uppercase tracking-[0.14em] text-ink;
+    }
+
+    .admin-nav-active {
+        @apply flex items-center gap-3 border-l-2 border-accent bg-paper-alt px-3 py-2.5
+               text-label font-semibold uppercase tracking-[0.12em] text-ink;
+    }
+
+    .admin-nav-inactive {
+        @apply flex items-center gap-3 border-l-2 border-transparent px-3 py-2.5
+               text-label uppercase tracking-[0.12em] text-ink-70
+               transition-colors duration-150 hover:bg-paper-alt hover:text-ink;
+    }
+
+    /* ---------- PRODUCT ---------------------------------------------- */
+
+    .product-card {
+        @apply relative flex flex-col border-t border-ink pt-4;
+    }
+
+    .product-card .card-image {
+        @apply relative overflow-hidden bg-paper-alt;
+    }
+
+    .product-card .card-image img {
+        @apply aspect-[4/3] w-full object-cover object-center;
+    }
+
+    .price-tag {
+        @apply font-mono text-data font-medium tabular-nums text-ink;
+    }
+
+    .price-original {
+        @apply font-mono text-label tabular-nums text-ink-40 line-through;
+    }
+
+    .price-badge {
+        @apply inline-block border border-ink px-2 py-0.5 font-mono text-label text-ink;
+    }
+
+    /* Catalogue row — the default product listing. An index line, not a card. */
+    .cat-row {
+        @apply grid grid-cols-[2rem_5rem_1fr] items-center gap-x-4 gap-y-1 border-b border-rule py-4
+               transition-colors duration-150 hover:bg-paper-alt
+               sm:grid-cols-[3rem_8rem_1fr_auto] sm:gap-x-6;
+    }
+
+    .cat-index {
+        @apply font-mono text-label tabular-nums text-ink-40;
+    }
+
+    /* ---------- TABLES ----------------------------------------------- */
+
+    .table-shell {
+        @apply w-full overflow-x-auto border-t border-ink;
+    }
+
+    .table-shell table {
+        @apply w-full min-w-max text-left text-body;
+    }
+
+    .table-shell thead {
+        @apply border-b border-ink;
+    }
+
+    .table-shell th {
+        @apply whitespace-nowrap px-3 py-3 text-left text-label uppercase text-ink-70;
+    }
+
+    .table-shell td {
+        @apply whitespace-nowrap px-3 py-3 align-middle text-ink;
+    }
+
+    .table-shell tbody tr {
+        @apply border-b border-rule transition-colors duration-150;
+    }
+
+    .table-shell tbody tr:hover {
+        @apply bg-paper-alt;
+    }
+
+    .empty-cell {
+        @apply py-10 text-center text-body text-ink-40;
+    }
+
+    /* ---------- EMPTY STATE ------------------------------------------- */
+
+    .empty-state {
+        @apply flex flex-col items-center justify-center gap-2 border border-rule bg-paper-warm px-6 py-12 text-center;
+    }
+
+    .empty-state-icon {
+        @apply flex h-12 w-12 items-center justify-center border border-rule text-ink-40;
+    }
+
+    .empty-state-title {
+        @apply font-display text-lg font-medium text-ink;
+    }
+
+    .empty-state-text {
+        @apply max-w-sm text-body text-ink-70;
+    }
+
+    /* ---------- FILTER CHIPS ------------------------------------------
+       Underline tabs. Not pills.
+       ------------------------------------------------------------------ */
+
+    .chip {
+        @apply inline-flex items-center gap-1 border-b-2 border-transparent pb-1
+               text-label uppercase tracking-[0.12em] text-ink-70
+               transition-colors duration-150 hover:border-rule hover:text-ink;
+    }
+
+    .chip-active {
+        @apply border-accent font-semibold text-ink;
+    }
+
+    /* ---------- ICON BUTTONS ------------------------------------------- */
+
+    .icon-btn {
+        @apply inline-flex h-8 w-8 shrink-0 items-center justify-center border border-transparent
+               text-ink-40 transition-colors duration-150
+               hover:border-ink hover:text-ink;
+    }
+
+    .icon-btn-danger {
+        @apply hover:border-accent hover:text-accent;
+    }
+
+    /* ---------- QUANTITY ---------------------------------------------- */
+
+    .qty-control {
+        @apply inline-flex items-stretch border border-ink;
+    }
+
+    .qty-btn {
+        @apply flex h-10 w-10 items-center justify-center border-r border-rule text-ink-70
+               transition-colors duration-150 hover:bg-ink hover:text-paper;
+    }
+
+    .qty-value {
+        @apply h-10 w-14 border-r border-rule bg-transparent text-center font-mono text-data
+               tabular-nums text-ink focus:outline-none;
+    }
+
+    /* ---------- STEP PROGRESS -----------------------------------------
+       Mono numerals on a hairline rule. Replaces the circular stepper.
+       ------------------------------------------------------------------ */
+
+    .step-progress {
+        @apply flex items-center gap-3;
+    }
+
+    .step-item {
+        @apply relative flex items-center gap-2;
+    }
+
+    .step-circle {
+        @apply flex h-6 w-6 shrink-0 items-center justify-center border border-ink
+               font-mono text-label text-ink-40 transition-colors duration-150;
+    }
+
+    .step-circle.active {
+        @apply border-accent bg-accent text-ink;
+    }
+
+    .step-circle.done {
+        @apply border-ink bg-ink text-paper;
+    }
+
+    .step-label {
+        @apply text-label uppercase tracking-[0.12em] text-ink-40 transition-colors duration-150;
+    }
+
+    .step-label.active {
+        @apply text-ink;
+    }
+
+    .step-label.done {
+        @apply text-ink-70;
+    }
+
+    .step-line {
+        @apply h-px flex-1 bg-rule transition-colors duration-150;
+    }
+
+    .step-line.done {
+        @apply bg-ink;
+    }
+
+    /* ---------- SKELETON ----------------------------------------------- */
+
+    .skeleton {
+        @apply animate-pulse bg-paper-alt;
+    }
+
+    .skeleton-text {
+        @apply skeleton h-4 w-3/4;
+    }
+
+    .skeleton-title {
+        @apply skeleton h-6 w-1/2;
+    }
+
+    .skeleton-image {
+        @apply skeleton aspect-[4/3] w-full;
+    }
+
+    .skeleton-avatar {
+        @apply skeleton h-10 w-10;
+    }
+
+    .skeleton-btn {
+        @apply skeleton h-10 w-24;
+    }
+
+    /* ---------- SCROLL REVEAL -----------------------------------------
+       Restrained: opacity + 8px. No scale, no float, no glow.
+       ------------------------------------------------------------------ */
+
+    .reveal,
+    .reveal-left,
+    .reveal-right,
+    .reveal-scale {
+        opacity: 0;
+        transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal {
+        transform: translateY(8px);
+    }
+
+    .reveal-left {
+        transform: translateX(-8px);
+    }
+
+    .reveal-right {
+        transform: translateX(8px);
+    }
+
+    .reveal-scale {
+        transform: scale(0.98);
+    }
+
+    .reveal.revealed,
+    .reveal-left.revealed,
+    .reveal-right.revealed,
+    .reveal-scale.revealed {
+        opacity: 1;
+        transform: none;
+    }
+
+    .reveal-delay-1 { transition-delay: 60ms; }
+    .reveal-delay-2 { transition-delay: 120ms; }
+    .reveal-delay-3 { transition-delay: 180ms; }
+    .reveal-delay-4 { transition-delay: 240ms; }
+
+    /* ---------- ANNOUNCEMENT ------------------------------------------
+       Flat ink strip. Mono type. No gradient, no stripes.
+       ------------------------------------------------------------------ */
+
+    .announcement-bar {
+        @apply relative border-b border-ink bg-ink py-2.5 text-center
+               text-label uppercase tracking-[0.14em] text-paper;
+    }
+
+    /* ---------- HERO --------------------------------------------------
+       Flat scrim. The mesh orbs are dead.
+       ------------------------------------------------------------------ */
+
+    .hero-section {
+        @apply relative overflow-hidden;
+    }
+
+    .hero-overlay {
+        @apply absolute inset-0 bg-ink/70;
+    }
+
+    .hero-mesh {
+        display: none;
+    }
+
+    /* ---------- ADMIN PANEL ------------------------------------------- */
+
+    .admin-sidebar {
+        @apply flex h-full flex-col overflow-hidden border-r border-ink bg-paper;
+    }
+
+    .admin-sidebar-logo {
+        @apply relative flex items-center gap-3 border-b border-rule px-5 py-5;
+    }
+
+    .admin-sidebar-nav {
+        @apply flex-1 space-y-0.5 overflow-y-auto px-3 py-4;
+    }
+
+    .admin-nav-item {
+        @apply flex items-center gap-3 border-l-2 border-transparent px-3 py-2.5
+               text-label uppercase tracking-[0.12em] text-ink-70
+               transition-colors duration-150 hover:bg-paper-alt hover:text-ink;
+    }
+
+    .admin-nav-item-active {
+        @apply flex items-center gap-3 border-l-2 border-accent bg-paper-alt px-3 py-2.5
+               text-label font-semibold uppercase tracking-[0.12em] text-ink;
+    }
+
+    .admin-nav-icon {
+        @apply h-4 w-4 shrink-0 text-ink-40 transition-colors duration-150;
+    }
+
+    .admin-nav-item-active .admin-nav-icon {
+        @apply text-accent;
+    }
+
+    .admin-header {
+        @apply sticky top-0 z-30 flex items-center justify-between border-b border-ink bg-paper px-6 py-3;
+    }
+
+    /* ---------- ADMIN FIGURES ------------------------------------------
+       The five gradient stat cards are now ledger cells in ink.
+       ------------------------------------------------------------------ */
+
+    .admin-stat {
+        @apply relative border-t border-ink pt-4 text-ink;
+    }
+
+    .admin-stat-title {
+        @apply flex min-w-0 items-center justify-between gap-3;
+    }
+
+    .admin-stat-label {
+        @apply text-label uppercase text-ink-70;
+    }
+
+    .admin-stat-value {
+        @apply mt-2 font-mono text-2xl font-medium tabular-nums tracking-tight text-ink;
+    }
+
+    .admin-stat-blue,
+    .admin-stat-purple,
+    .admin-stat-amber,
+    .admin-stat-emerald,
+    .admin-stat-primary {
+        @apply border-t border-ink;
+    }
+
+    .admin-donut {
+        @apply relative mx-auto h-40 w-40;
+    }
+
+    .admin-donut-center {
+        @apply absolute inset-0 flex flex-col items-center justify-center;
+    }
+
+    /* Flat ink panel. Was a three-stop gradient. */
+    .admin-login-left {
+        @apply relative hidden overflow-hidden bg-ink lg:flex lg:w-1/2 lg:items-center lg:justify-center;
+    }
+
+    /* Floating glow orbs: removed. */
+    .admin-login-decorative-circle {
+        display: none;
+    }
+
+    /* ---------- MASTHEAD ----------------------------------------------
+       Broadsheet nameplate: wordmark, hairline, mono subtitle. The logo is
+       a typographic lockup, not an image in a bubble.
+       ------------------------------------------------------------------ */
+
+    .masthead {
+        @apply flex items-center gap-5;
+    }
+
+    .wordmark {
+        @apply font-display text-2xl font-medium leading-none tracking-tight text-ink
+               transition-colors duration-150 hover:text-accent;
+    }
+
+    .wordmark-sub {
+        @apply border-l border-rule pl-5 text-label uppercase leading-[1.6] tracking-[0.14em] text-ink-40;
+    }
+
+    /* Slide-down search band. Anchored to the header, never a floating card. */
+    .search-band {
+        @apply border-b border-ink bg-paper-warm;
+    }
+
+    /* ---------- COLOPHON ----------------------------------------------- */
+
+    .colophon-link {
+        @apply block py-1.5 text-body text-ink-70 transition-colors duration-150 hover:text-accent;
+    }
+
+    .colophon-heading {
+        @apply text-label uppercase text-ink;
+    }
+
+    .colophon-rule {
+        @apply border-t border-rule pt-6;
+    }
+
+    /* ---------- SITE HEADER --------------------------------------------
+       Transparent hairline at rest; a firm ink rule once the page scrolls.
+       No shadow, no backdrop blur.
+       ------------------------------------------------------------------ */
+
+    .site-header {
+        @apply sticky top-0 z-40 border-b border-transparent bg-paper
+               transition-colors duration-200 ease-linear;
+    }
+
+    .site-header.header-scrolled {
+        @apply border-b-ink;
+    }
+
+    /* ---------- UTILITIES --------------------------------------------- */
+
+    .scrollbar-none {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-none::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* ---------- LIVE CHAT ----------------------------------------------
+       Ink-ruled panel, square bubbles, paprika for "me". No radii beyond
+       the status dot, no soft shadows — same house rules as the rest.
+       ------------------------------------------------------------------ */
+
+    .chat-panel {
+        @apply flex h-[560px] flex-col overflow-hidden border border-ink bg-paper-warm;
+    }
+
+    .chat-head {
+        @apply flex items-center justify-between gap-3 border-b border-ink bg-paper-warm px-4 py-3;
+    }
+
+    .chat-dot {
+        @apply h-2 w-2 shrink-0 rounded-full;
+    }
+
+    .chat-dot-on {
+        @apply bg-accent;
+    }
+
+    .chat-dot-off {
+        @apply bg-ink-40;
+    }
+
+    .chat-body {
+        @apply flex-1 space-y-3 overflow-y-auto bg-paper p-4;
+    }
+
+    .chat-empty {
+        @apply py-10 text-center text-sm text-ink-40;
+    }
+
+    .chat-row {
+        @apply flex;
+    }
+
+    .chat-row-me {
+        @apply justify-end;
+    }
+
+    .chat-row-them {
+        @apply justify-start;
+    }
+
+    .chat-bubble {
+        @apply max-w-[78%] border px-3 py-2;
+    }
+
+    .chat-bubble-me {
+        @apply border-ink bg-accent text-ink;
+    }
+
+    .chat-bubble-them {
+        @apply border-rule bg-paper-warm text-ink;
+    }
+
+    .chat-text {
+        @apply whitespace-pre-line break-words text-sm leading-relaxed;
+    }
+
+    .chat-time {
+        @apply mt-1 block font-mono text-[10px] uppercase tracking-wide text-ink-40;
+    }
+
+    .chat-form {
+        @apply flex items-end gap-2 border-t border-ink bg-paper-warm p-3;
+    }
+
+    .chat-input {
+        @apply max-h-28 w-full flex-1 resize-none border border-ink bg-paper px-3 py-2 text-sm text-ink;
+    }
+
+    .chat-send {
+        @apply flex h-10 w-10 shrink-0 items-center justify-center border border-ink bg-ink text-paper
+               transition-colors duration-150 hover:bg-accent hover:text-ink
+               disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-ink disabled:hover:text-paper;
+    }
+
+    .chat-guest {
+        @apply flex flex-col items-center gap-4 p-6;
+    }
+
+    .chat-fab {
+        @apply fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center border border-ink
+               bg-ink text-paper transition-colors duration-150 hover:bg-accent hover:text-ink;
+    }
+
+    .chat-fab-badge {
+        @apply absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center border border-ink
+               bg-accent px-1 font-mono text-[10px] font-medium leading-none text-ink tabular-nums;
+    }
+}
